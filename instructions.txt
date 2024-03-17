@@ -28,4 +28,12 @@ INSTALLED_APPS = [
 7. migrations
 py manage.py makemigrations
 py manage.py migrate
+now, localhost:8000/admin can be seen
 
+8. create superuser
+py manage.py createsuperuser
+username: admin
+email address: duraprakash141@gmail.com
+password: aa11aa22
+password again: aa11aa22
+now, localhost:8000/admin can be login using these username and password
