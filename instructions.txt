@@ -1,0 +1,9 @@
+
+1. create virtual environment
+py -m venv venv
+
+2. install django
+pip install django
+
+3. create django project
+django-admin startproject config .
