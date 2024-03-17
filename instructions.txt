@@ -10,3 +10,6 @@ django-admin startproject config .
 
 4. run server
 py manage.py runserver
+
+5. create django app
+django-admin startapp todo
