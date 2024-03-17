@@ -69,11 +69,13 @@ now, CRUD is possible in admin panel
 ============= Todo app ===========
 ============= CRUD start ===========
 12. add functions in todo/views.py
-    from django.shortcuts import render
-    from django.http import JsonResponse
-    from .models import Todo
+   from django.shortcuts import render
+from django.http import JsonResponse
+from .models import Todo
+from django.views.decorators.csrf import csrf_exempt
+import json
 
-    # Create your views here.
+# Create your views here.
 
     # list all todos
     def list_todo(request):
@@ -83,6 +85,7 @@ now, CRUD is possible in admin panel
             for i in todos: # loop through todos
                 todo.append( # append every item of todos into todo
                     { # transforming data into json format
+                        'id': i.pk,
                         'title': i.title,
                         'description': i.description,
                         'is_completed': i.is_completed,
@@ -98,6 +101,7 @@ now, CRUD is possible in admin panel
             todo = Todo.objects.get(id=todoId) # ORM queryset to get todo list of id
             return JsonResponse(
                     { # transforming data into json format
+                        'id': todo.pk,
                         'title': todo.title,
                         'description': todo.description,
                         'is_completed': todo.is_completed,
@@ -118,6 +122,7 @@ now, CRUD is possible in admin panel
             # return JsonResponse({'message':'Todo Updated Successfully'}, safe=False)
             return JsonResponse(
                     { # transforming data into json format
+                        'id': todo.pk,
                         'title': todo.title,
                         'description': todo.description,
                         'is_completed': todo.is_completed,
@@ -132,12 +137,63 @@ now, CRUD is possible in admin panel
         try:
             todo = Todo.objects.get(id=todoId) # ORM queryset to get todo list of id
 
-            todo.delete() # delete
+            # todo.delete() # delete
             return JsonResponse({'message':'Todo Deleted Successfully'}, safe=False)
         except Todo.DoesNotExist:
             return JsonResponse({'message':'Todo Not Found'}, safe=False)
 
-    Note:: creating/inserting of data in the todo is not done here yet...
+    # create todo
+    @csrf_exempt
+    def create_todo(request):
+        if request.method == 'POST':
+            # Check if request is JSON or form data
+            try:
+                data = json.loads(request.body)
+                title = data.get("title")
+                description = data.get("description", "")
+                is_completed = data.get("is_completed", False)
+            except json.JSONDecodeError:
+                title = request.POST.get("title")
+                description = request.POST.get("description", "")
+                is_completed = request.POST.get("is_completed", False)
+
+            # Create new todo
+            new_todo = Todo.objects.create(
+                title=title,
+                description=description,
+                is_completed=is_completed
+            )
+            return JsonResponse({'message': 'Todo Created'}, status=201)
+        else:
+            return JsonResponse({'message': 'Method not allowed'}, status=405)
+
+    Note:: creating/inserting of data in the todo is done 
+        but doesn't support params, use postman to test,
+        moreover, csrf or token is directly given inside function,
+        so, token is not required while testing with post man.
+            
+            testing in postman: 
+            method 1: select body, raw and JSON
+            post -> http://localhost:8000/todos/create/
+                    {
+                        "title": "Buy a sharpner",
+                        "description": "A sharpner to sharpen the pencil",
+                        "is_completed": false
+                    }
+
+            method 2: select form-data, and fill the keys with values
+            post -> http://localhost:8000/todos/create/
+                    title - Buy a sharpner
+                    description - A sharpner to sharpen the pencil
+                    is_completed - false
+
+            ======== DOES NOT SUPPORT======
+            method 3: select params, and fill the keys with values
+            post -> http://localhost:8000/todos/create/
+                    title - Buy a sharpner
+                    description - A sharpner to sharpen the pencil
+                    is_completed - false
+            ======== DOES NOT SUPPORT======
 
 13. add urls.py in todo/urls.py
     from django.urls import path

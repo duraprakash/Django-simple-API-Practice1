@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 from .models import Todo
+from django.views.decorators.csrf import csrf_exempt
+import json
 
 # Create your views here.
 
@@ -68,3 +70,28 @@ def delete_todo(request, todoId):
         return JsonResponse({'message':'Todo Deleted Successfully'}, safe=False)
     except Todo.DoesNotExist:
         return JsonResponse({'message':'Todo Not Found'}, safe=False)
+
+# create todo
+@csrf_exempt
+def create_todo(request):
+    if request.method == 'POST':
+        # Check if request is JSON or form data
+        try:
+            data = json.loads(request.body)
+            title = data.get("title")
+            description = data.get("description", "")
+            is_completed = data.get("is_completed", False)
+        except json.JSONDecodeError:
+            title = request.POST.get("title")
+            description = request.POST.get("description", "")
+            is_completed = request.POST.get("is_completed", False)
+
+        # Create new todo
+        new_todo = Todo.objects.create(
+            title=title,
+            description=description,
+            is_completed=is_completed
+        )
+        return JsonResponse({'message': 'Todo Created'}, status=201)
+    else:
+        return JsonResponse({'message': 'Method not allowed'}, status=405)
