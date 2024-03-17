@@ -13,3 +13,14 @@ py manage.py runserver
 
 5. create django app
 django-admin startapp todo
+
+6. register app in settings.py 
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'todo',
+]
