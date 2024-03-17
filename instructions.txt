@@ -24,3 +24,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'todo',
 ]
+
+7. migrations
+py manage.py makemigrations
+py manage.py migrate
+
