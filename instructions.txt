@@ -7,3 +7,6 @@ pip install django
 
 3. create django project
 django-admin startproject config .
+
+4. run server
+py manage.py runserver
