@@ -50,3 +50,13 @@ now, localhost:8000/admin can be login using these username and password
 
     def __str__(self):
         return self.title
+
+10. register model in admin.py
+    from django.contrib import admin
+    from .models import Todo
+
+    # Register your models here.
+    admin.site.register(Todo)
+
+    now, http://localhost:8000/admin/ after login, todo model can be seen in the admin panel
+    howeve, inserting or creating record from admin panel will fails.
