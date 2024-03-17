@@ -60,3 +60,8 @@ now, localhost:8000/admin can be login using these username and password
 
     now, http://localhost:8000/admin/ after login, todo model can be seen in the admin panel
     howeve, inserting or creating record from admin panel will fails.
+
+11. migrations to fix inserting/creating records in admin panel
+py manage.py makemigrations
+py manage.py migrate
+now, CRUD is possible in admin panel
